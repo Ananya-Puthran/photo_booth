@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Ears -->
+  <path d="M20 50 L15 15 L45 35 Z" fill="#ffffff" stroke="#ffb6c1" stroke-width="2"/>
+  <path d="M80 50 L85 15 L55 35 Z" fill="#ffffff" stroke="#ffb6c1" stroke-width="2"/>
+  <!-- Inner Ears -->
+  <path d="M22 45 L18 22 L40 36 Z" fill="#ffb6c1"/>
+  <path d="M78 45 L82 22 L60 36 Z" fill="#ffb6c1"/>
+  <!-- Head -->
+  <ellipse cx="50" cy="55" rx="40" ry="30" fill="#ffffff" stroke="#ffb6c1" stroke-width="2"/>
+  <!-- Eyes -->
+  <circle cx="35" cy="50" r="4" fill="#333"/>
+  <circle cx="65" cy="50" r="4" fill="#333"/>
+  <!-- Blushes -->
+  <ellipse cx="25" cy="60" rx="6" ry="3" fill="#ffb6c1" opacity="0.6"/>
+  <ellipse cx="75" cy="60" rx="6" ry="3" fill="#ffb6c1" opacity="0.6"/>
+  <!-- Nose/Mouth -->
+  <circle cx="50" cy="58" r="2" fill="#ffb6c1"/>
+  <path d="M45 62 Q50 65 55 62" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+  <!-- Whiskers -->
+  <path d="M10 50 L25 52 M8 58 L23 58 M10 66 L25 64" stroke="#333" stroke-width="1" fill="none"/>
+  <path d="M90 50 L75 52 M92 58 L77 58 M90 66 L75 64" stroke="#333" stroke-width="1" fill="none"/>
+</svg>

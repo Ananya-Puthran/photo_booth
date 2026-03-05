@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Stem & Leaves -->
+  <path d="M50 15 Q45 5 40 10 Q45 20 50 25 Q55 20 60 10 Q55 5 50 15" fill="#32CD32"/>
+  <path d="M30 20 Q40 25 50 25 Q60 25 70 20 Q65 30 50 25 Q35 30 30 20" fill="#228B22"/>
+  <!-- Strawberry Body -->
+  <path d="M25 35 Q15 65 50 90 Q85 65 75 35 Q70 15 50 20 Q30 15 25 35" fill="#FF4500"/>
+  <!-- Seeds -->
+  <circle cx="40" cy="40" r="2" fill="#FFD700"/>
+  <circle cx="60" cy="40" r="2" fill="#FFD700"/>
+  <circle cx="50" cy="55" r="2" fill="#FFD700"/>
+  <circle cx="35" cy="65" r="2" fill="#FFD700"/>
+  <circle cx="65" cy="65" r="2" fill="#FFD700"/>
+  <circle cx="45" cy="75" r="2" fill="#FFD700"/>
+  <circle cx="55" cy="75" r="2" fill="#FFD700"/>
+  <circle cx="50" cy="30" r="2" fill="#FFD700"/>
+</svg>

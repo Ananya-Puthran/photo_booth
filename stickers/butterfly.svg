@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Body -->
+  <ellipse cx="50" cy="50" rx="4" ry="20" fill="#333"/>
+  <!-- Antennae -->
+  <path d="M48 30 Q40 15 35 20" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M52 30 Q60 15 65 20" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="35" cy="20" r="2" fill="#333"/>
+  <circle cx="65" cy="20" r="2" fill="#333"/>
+  
+  <!-- Top Wings -->
+  <path d="M48 40 C30 10 5 20 10 45 C15 70 45 60 48 50 Z" fill="#E6E6FA" stroke="#9370DB" stroke-width="2"/>
+  <path d="M52 40 C70 10 95 20 90 45 C85 70 55 60 52 50 Z" fill="#E6E6FA" stroke="#9370DB" stroke-width="2"/>
+  
+  <!-- Bottom Wings -->
+  <path d="M48 55 C30 65 15 85 25 90 C35 95 45 75 50 65 Z" fill="#D8BFD8" stroke="#9370DB" stroke-width="2"/>
+  <path d="M52 55 C70 65 85 85 75 90 C65 95 55 75 50 65 Z" fill="#D8BFD8" stroke="#9370DB" stroke-width="2"/>
+  
+  <!-- Wing Details -->
+  <circle cx="25" cy="40" r="5" fill="#FFFFFF"/>
+  <circle cx="75" cy="40" r="5" fill="#FFFFFF"/>
+  <circle cx="35" cy="75" r="3" fill="#FFFFFF"/>
+  <circle cx="65" cy="75" r="3" fill="#FFFFFF"/>
+</svg>

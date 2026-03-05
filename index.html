@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kawaii Photobooth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-pink">
+    <!-- Intro Modal -->
+    <div id="introModal" class="modal">
+        <div class="modal-content">
+            <h2>✨ Welcome to the Photobooth ✨</h2>
+            <p>Ready for your cute photoshoot? Here's how to use it:</p>
+            <ol>
+                <li>📸 Allow camera access</li>
+                <li>🎨 Choose a cute filter</li>
+                <li>💖 Decorate with stickers (drag & drop!)</li>
+                <li>✨ Click 'Start Capture' to take 4 pictures</li>
+                <li>📥 Download your aesthetic photo strip</li>
+            </ol>
+            <button id="startBtn" class="btn primary-btn">Let's Go! ✨</button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <h1>Kawaii Photobooth 🌸</h1>
+            <div class="theme-controls">
+                <span>Theme:</span>
+                <button class="theme-btn theme-pink" data-theme="pink" title="Pink"></button>
+                <button class="theme-btn theme-lavender" data-theme="lavender" title="Lavender"></button>
+                <button class="theme-btn theme-mint" data-theme="mint" title="Mint"></button>
+                <button class="theme-btn theme-peach" data-theme="peach" title="Peach"></button>
+            </div>
+        </header>
+
+        <!-- Main Content Layout -->
+        <main class="main-layout">
+
+            <!-- Left Panel: Camera & Controls -->
+            <section class="camera-section">
+                <div class="camera-frame">
+                    <video id="videoElement" autoplay playsinline></video>
+                    <div id="countdownOverlay" class="countdown-overlay hidden">3</div>
+                    <div id="poseSuggestion" class="pose-overlay hidden">Peace sign! ✌️</div>
+                </div>
+
+                <div class="controls-panel">
+                    <button id="captureBtn" class="btn capture-btn">📸 Start Capture</button>
+
+                    <div class="filter-controls">
+                        <h3>Camera Filters</h3>
+                        <div class="filter-options">
+                            <button class="filter-btn active" data-filter="none">Normal</button>
+                            <button class="filter-btn" data-filter="digicam">Digicam</button>
+                            <button class="filter-btn" data-filter="vintage">Vintage</button>
+                            <button class="filter-btn" data-filter="grayscale">B&W</button>
+                            <button class="filter-btn" data-filter="sepia">Sepia</button>
+                            <button class="filter-btn" data-filter="softpink">Soft Pink</button>
+                            <button class="filter-btn" data-filter="kawaii">Kawaii</button>
+                            <button class="filter-btn" data-filter="warmfilm">Warm Film</button>
+                            <button class="filter-btn" data-filter="cooltone">Cool Tone</button>
+                            <button class="filter-btn" data-filter="faded">Faded</button>
+                            <button class="filter-btn" data-filter="highcontrast">High Contrast</button>
+                            <button class="filter-btn" data-filter="blur">Soft Blur</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Middle Panel: Stickers -->
+            <section class="stickers-section">
+                <h3>Decorations ✨</h3>
+                <p class="subtitle">Drag onto your photo strip!</p>
+                <div class="sticker-palette" id="stickerPalette">
+                    <img src="stickers/heart.svg" class="draggable-sticker" draggable="true" alt="Heart">
+                    <img src="stickers/star.svg" class="draggable-sticker" draggable="true" alt="Star">
+                    <img src="stickers/bow.svg" class="draggable-sticker" draggable="true" alt="Bow">
+                    <img src="stickers/sparkles.svg" class="draggable-sticker" draggable="true" alt="Sparkles">
+                    <img src="stickers/flower.svg" class="draggable-sticker" draggable="true" alt="Flower">
+                    <img src="stickers/bear.svg" class="draggable-sticker" draggable="true" alt="Bear">
+                    <img src="stickers/kitty.svg" class="draggable-sticker" draggable="true" alt="Kitty">
+                    <img src="stickers/strawberry.svg" class="draggable-sticker" draggable="true" alt="Strawberry">
+                    <img src="stickers/butterfly.svg" class="draggable-sticker" draggable="true" alt="Butterfly">
+                    <img src="stickers/crown.svg" class="draggable-sticker" draggable="true" alt="Crown">
+                    <img src="stickers/ribbon.svg" class="draggable-sticker" draggable="true" alt="Ribbon">
+                </div>
+            </section>
+
+            <!-- Right Panel: Result Preview (Photo Strip) -->
+            <section class="result-section">
+                <div class="strip-controls">
+                    <h3>Frame Color</h3>
+                    <div class="frame-colors">
+                        <button class="frame-btn color-pink active" data-color="#ffb6c1"></button>
+                        <button class="frame-btn color-lavender" data-color="#e6e6fa"></button>
+                        <button class="frame-btn color-mint" data-color="#98ff98"></button>
+                        <button class="frame-btn color-cream" data-color="#fffdd0"></button>
+                        <button class="frame-btn color-gradient"
+                            data-color="linear-gradient(to bottom, #ffb6c1, #e6e6fa, #98ff98)"></button>
+                    </div>
+                </div>
+
+                <div class="photo-strip-container" id="photoStripContainer">
+                    <div class="photo-strip" id="photoStrip">
+                        <div class="photo-slot" id="slot-0"></div>
+                        <div class="photo-slot" id="slot-1"></div>
+                        <div class="photo-slot" id="slot-2"></div>
+                        <div class="photo-slot" id="slot-3"></div>
+                        <div class="strip-text">
+                            <input type="text" id="stripMessage" placeholder="Write a message... 💖" maxlength="30">
+                        </div>
+                    </div>
+                    <!-- Drawing Canvas for export -->
+                    <canvas id="exportCanvas" style="display:none;"></canvas>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="retakeBtn" class="btn secondary-btn" disabled>Retake Photos</button>
+                    <button id="downloadBtn" class="btn primary-btn" disabled>📥 Download (PNG)</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
