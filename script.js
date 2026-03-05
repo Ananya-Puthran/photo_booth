@@ -26,8 +26,13 @@ let capturedPhotos = []; // Store base64 data URIs
 const POSES = [
     "Peace sign! ✌️", "Cute wink! 😉", "Heart pose! 🫶",
     "Cheek poke! 👈", "Blow a kiss! 💋", "Shy pose! 🙈",
-    "Big smile! 😁", "Pouty lips! 😗", "Finger heart! 🫰"
+    "Big smile! 😁", "Pouty lips! 😗", "Finger heart! 🫰",
+    "Thumbs up! 👍", "Cat paws! 🐾",
+    "Bunny ears! 🐰", "Surprised gasp! 😯", "Half heart! 💖",
+    "Sleepy head! 😴", "Fierce glare! 😼", "V-sign on eye! ✌️👁️",
+    "Puffed cheeks! 🐡", "Salute! 🫡"
 ];
+let currentSessionPoses = [];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -123,9 +128,12 @@ captureBtn.addEventListener('click', async () => {
     capturedPhotos = [];
     photoSlots.forEach(slot => slot.innerHTML = '');
 
+    // Shuffle and pick 4 unique poses for this session
+    currentSessionPoses = [...POSES].sort(() => 0.5 - Math.random()).slice(0, 4);
+
     // Capture 4 photos
     for (let i = 0; i < 4; i++) {
-        await showPoseSuggestion(i === 0);
+        await showPoseSuggestion(i === 0, i);
         await runCountdown();
         const photoDataUrl = captureFrame();
         capturedPhotos.push(photoDataUrl);
@@ -176,10 +184,10 @@ function runCountdown() {
     });
 }
 
-function showPoseSuggestion(isFirst) {
+function showPoseSuggestion(isFirst, poseIndex) {
     return new Promise(resolve => {
-        const randomPose = POSES[Math.floor(Math.random() * POSES.length)];
-        poseSuggestion.textContent = isFirst ? `First pose: ${randomPose}` : `Next pose: ${randomPose}`;
+        const selectedPose = currentSessionPoses[poseIndex];
+        poseSuggestion.textContent = isFirst ? `First pose: ${selectedPose}` : `Next pose: ${selectedPose}`;
         poseSuggestion.classList.remove('hidden');
 
         // Give 2 seconds to read the pose before starting countdown
