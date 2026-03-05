@@ -191,17 +191,39 @@ function showPoseSuggestion(isFirst) {
 
 function captureFrame() {
     const canvas = document.createElement('canvas');
-    // Maintain aspect ratio matching the video stream native usually 4:3
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+
+    // We want the final image to be exactly 4:3 to match our CSS slots
+    // So we calculate the optimal 4:3 crop from whatever the video's actual dimensions are
+    const videoRatio = video.videoWidth / video.videoHeight;
+    const targetRatio = 4 / 3;
+
+    let sourceWidth = video.videoWidth;
+    let sourceHeight = video.videoHeight;
+    let sourceX = 0;
+    let sourceY = 0;
+
+    if (videoRatio > targetRatio) {
+        // Video is wider than 4:3 (e.g. 16:9 on some phones/webcams)
+        sourceWidth = sourceHeight * targetRatio;
+        sourceX = (video.videoWidth - sourceWidth) / 2;
+    } else if (videoRatio < targetRatio) {
+        // Video is taller than 4:3 (e.g. portrait mode on phones)
+        sourceHeight = sourceWidth / targetRatio;
+        sourceY = (video.videoHeight - sourceHeight) / 2;
+    }
+
+    // Set canvas to the actual cropped dimensions we want to save
+    canvas.width = sourceWidth;
+    canvas.height = sourceHeight;
     const ctx = canvas.getContext('2d');
 
     // Mirror the canvas to match preview
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/png');
+    // Draw only the cropped portion of the video onto the exact canvas size
+    ctx.drawImage(video, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/png', 1.0);
 }
 
 function displayPhotoInSlot(dataUrl, index) {

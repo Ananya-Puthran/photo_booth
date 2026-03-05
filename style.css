@@ -323,7 +323,7 @@ section {
 
 .pose-overlay {
     position: absolute;
-    bottom: 20px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.85);
@@ -333,13 +333,13 @@ section {
     font-weight: 600;
     color: var(--accent-color);
     z-index: 5;
-    animation: slideUp 0.5s ease-out;
+    animation: slideDown 0.5s ease-out;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes slideUp {
+@keyframes slideDown {
     from {
-        transform: translate(-50%, 20px);
+        transform: translate(-50%, -20px);
         opacity: 0;
     }
 
