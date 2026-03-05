@@ -1,6 +1,6 @@
 
 # 📸 Aesthetic Photobooth Web App
-
+🌐 **Live Demo:** https://ananya-puthran.github.io/photo_booth/  <br><br>
 A cute and aesthetic **web-based photobooth** that captures **4 photos automatically**, applies **filters**, allows **stickers and frame customization**, and generates a **downloadable photo strip** — just like Korean photobooths.
 
 Designed with a **girlish pastel UI** (pink themed) and built using **HTML, CSS, and JavaScript with the browser camera API**.
