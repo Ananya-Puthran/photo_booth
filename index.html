@@ -17,12 +17,51 @@
             <p>Ready for your cute photoshoot? Here's how to use it:</p>
             <ol>
                 <li>📸 Allow camera access</li>
+                <li>🔊 Turn your volume to MAX!</li>
                 <li>🎨 Choose a cute filter</li>
                 <li>💖 Decorate with stickers (drag & drop!)</li>
-                <li>✨ Click 'Start Capture' to take 4 pictures</li>
+                <li>✨ Click 'Start Capture' to take your pictures</li>
                 <li>📥 Download your aesthetic photo strip</li>
             </ol>
             <button id="startBtn" class="btn primary-btn">Let's Go! ✨</button>
+        </div>
+    </div>
+
+    <!-- Layout Selection Modal -->
+    <div id="layoutModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>📸 Choose Frame Layout</h2>
+            <div class="layout-options">
+                <div class="layout-card" data-layout="3">
+                    <div class="layout-preview layout-3-preview">
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                    </div>
+                    <span>3 Photos</span>
+                </div>
+                <div class="layout-card active" data-layout="4">
+                    <div class="layout-preview layout-4-preview">
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                    </div>
+                    <span>4 Photos</span>
+                </div>
+                <div class="layout-card" data-layout="6">
+                    <div class="layout-preview layout-6-preview">
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                        <div class="prev-slot"></div>
+                    </div>
+                    <span>6 Photos</span>
+                </div>
+            </div>
+            <button id="confirmLayoutBtn" class="btn primary-btn">Start Photoshoot 📸</button>
         </div>
     </div>
 
@@ -98,6 +137,16 @@
             <!-- Right Panel: Result Preview (Photo Strip) -->
             <section class="result-section">
                 <div class="strip-controls">
+                    <div class="layout-toggles"
+                        style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center;">
+                        <button id="changeLayoutBtn" class="btn secondary-btn"
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem;">Change Frame Layout</button>
+                        <label
+                            style="font-size: 0.9rem; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="checkbox" id="showPoseTextCheckbox">
+                            Show pose instructions below photos
+                        </label>
+                    </div>
                     <h3>Frame Color</h3>
                     <div class="frame-colors">
                         <button class="frame-btn color-pink active" data-color="#ffb6c1"></button>
@@ -110,11 +159,13 @@
                 </div>
 
                 <div class="photo-strip-container" id="photoStripContainer">
-                    <div class="photo-strip" id="photoStrip">
-                        <div class="photo-slot" id="slot-0"></div>
-                        <div class="photo-slot" id="slot-1"></div>
-                        <div class="photo-slot" id="slot-2"></div>
-                        <div class="photo-slot" id="slot-3"></div>
+                    <div class="photo-strip layout-4" id="photoStrip">
+                        <div id="photoSlotsContainer" class="photo-slots-container">
+                            <div class="photo-slot" id="slot-0"></div>
+                            <div class="photo-slot" id="slot-1"></div>
+                            <div class="photo-slot" id="slot-2"></div>
+                            <div class="photo-slot" id="slot-3"></div>
+                        </div>
                         <div class="strip-text">
                             <input type="text" id="stripMessage" placeholder="Write a message... 💖" maxlength="30">
                         </div>

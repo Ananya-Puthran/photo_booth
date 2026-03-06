@@ -8,17 +8,14 @@ const startBtn = document.getElementById('startBtn');
 const retakeBtn = document.getElementById('retakeBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
-const photoSlots = [
-    document.getElementById('slot-0'),
-    document.getElementById('slot-1'),
-    document.getElementById('slot-2'),
-    document.getElementById('slot-3')
-];
+let photoSlots = [];
 const photoStripContainer = document.getElementById('photoStripContainer');
 const photoStrip = document.getElementById('photoStrip');
 const stripMessage = document.getElementById('stripMessage');
 
 // State
+let currentLayoutCount = 4;
+let showPoseInstruction = false;
 let currentFilter = 'none';
 let currentFrameColor = '#ffb6c1';
 let isCapturing = false;
@@ -27,18 +24,81 @@ const POSES = [
     "Peace sign! ✌️", "Cute wink! 😉", "Heart pose! 🫶",
     "Cheek poke! 👈", "Blow a kiss! 💋", "Shy pose! 🙈",
     "Big smile! 😁", "Pouty lips! 😗", "Finger heart! 🫰",
-    "Thumbs up! 👍", "Cat paws! 🐾",
-    "Bunny ears! 🐰", "Surprised gasp! 😯", "Half heart! 💖",
-    "Sleepy head! 😴", "Fierce glare! 😼", "V-sign on eye! ✌️👁️",
-    "Puffed cheeks! 🐡", "Salute! 🫡"
+    "Thumbs up! 👍", "Cat paws! 🐾", "Bunny ears! 🐰",
+    "Surprised gasp! 😯", "Half heart on cheek! 💖", "Sleepy head! 😴",
+    "Fierce glare! 😼", "V-sign on eye! ✌️👁️", "Puffed cheeks! 🐡",
+    "Salute! 🫡", "Tilt your head! 💫", "Silly tongue out! 😛",
+    "Thinking face! 🤔", "Model pose! 💅", "Rock on! 🤘",
+    "Playful nail bite! 😬", "Fake crying! 😭", "Double peace! ✌️✌️",
+    "Thumbs down! 👎", "Point at the camera! 👉", "Rest chin on your hand! 🤔",
+    "Finger gun on head! 🔫"
 ];
 let currentSessionPoses = [];
+
+// Audio Setup
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+
+function playBeep() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+}
+
+function playShutter() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+}
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', () => {
         introModal.classList.add('hidden');
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        document.getElementById('layoutModal').classList.remove('hidden');
         initCamera();
+    });
+
+    document.getElementById('confirmLayoutBtn').addEventListener('click', () => {
+        document.getElementById('layoutModal').classList.add('hidden');
+        generatePhotoSlots();
+    });
+
+    document.getElementById('changeLayoutBtn').addEventListener('click', () => {
+        document.getElementById('layoutModal').classList.remove('hidden');
+    });
+
+    document.getElementById('showPoseTextCheckbox').addEventListener('change', (e) => {
+        showPoseInstruction = e.target.checked;
+        document.querySelectorAll('.pose-text-display').forEach(el => {
+            el.style.display = showPoseInstruction ? 'block' : 'none';
+        });
+    });
+
+    const layoutCards = document.querySelectorAll('.layout-card');
+    layoutCards.forEach(card => {
+        card.addEventListener('click', () => {
+            layoutCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            currentLayoutCount = parseInt(card.dataset.layout);
+        });
     });
 
     setupThemeControls();
@@ -47,6 +107,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDraggableStickers();
     setupActionButtons();
 });
+
+function generatePhotoSlots() {
+    const container = document.getElementById('photoSlotsContainer');
+    container.innerHTML = '';
+    photoSlots = [];
+
+    // Update strip classes
+    photoStrip.classList.remove('layout-3', 'layout-4', 'layout-6');
+    photoStrip.classList.add(`layout-${currentLayoutCount}`);
+
+    for (let i = 0; i < currentLayoutCount; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'photo-slot';
+        slot.id = `slot-${i}`;
+        container.appendChild(slot);
+        photoSlots.push(slot);
+    }
+}
 
 // Webcam access
 async function initCamera() {
@@ -128,11 +206,11 @@ captureBtn.addEventListener('click', async () => {
     capturedPhotos = [];
     photoSlots.forEach(slot => slot.innerHTML = '');
 
-    // Shuffle and pick 4 unique poses for this session
-    currentSessionPoses = [...POSES].sort(() => 0.5 - Math.random()).slice(0, 4);
+    // Shuffle and pick unique poses for this session
+    currentSessionPoses = [...POSES].sort(() => 0.5 - Math.random()).slice(0, currentLayoutCount);
 
-    // Capture 4 photos
-    for (let i = 0; i < 4; i++) {
+    // Capture photos
+    for (let i = 0; i < currentLayoutCount; i++) {
         await showPoseSuggestion(i === 0, i);
         await runCountdown();
         const photoDataUrl = captureFrame();
@@ -151,6 +229,7 @@ function runCountdown() {
         countdownOverlay.classList.remove('hidden');
         let count = 3;
         countdownOverlay.textContent = count;
+        playBeep();
 
         const interval = setInterval(() => {
             count--;
@@ -160,6 +239,7 @@ function runCountdown() {
                 countdownOverlay.style.animation = 'none';
                 countdownOverlay.offsetHeight; /* trigger reflow */
                 countdownOverlay.style.animation = null;
+                playBeep();
             } else {
                 clearInterval(interval);
                 countdownOverlay.classList.add('hidden');
@@ -177,6 +257,7 @@ function runCountdown() {
                 setTimeout(() => {
                     captureFlash.style.opacity = '0';
                     setTimeout(() => captureFlash.remove(), 200);
+                    playShutter();
                     resolve();
                 }, 100);
             }
@@ -235,12 +316,22 @@ function captureFrame() {
 }
 
 function displayPhotoInSlot(dataUrl, index) {
+    const slot = photoSlots[index];
+    slot.innerHTML = ''; // clear slot
     const img = document.createElement('img');
     img.src = dataUrl;
     img.className = `filter-${currentFilter}`;
     // Undo the CSS mirror since we already mirrored in canvas
     img.style.transform = 'scaleX(1)';
-    photoSlots[index].appendChild(img);
+    slot.appendChild(img);
+
+    if (currentSessionPoses[index]) {
+        const poseText = document.createElement('div');
+        poseText.className = 'pose-text-display';
+        poseText.textContent = currentSessionPoses[index];
+        poseText.style.display = showPoseInstruction ? 'block' : 'none';
+        slot.appendChild(poseText);
+    }
 }
 
 // Drag & Drop Stickers (Mobile Compatible via Pointer Events)
@@ -413,7 +504,7 @@ function setupActionButtons() {
 
 // Canvas Generation
 async function generateFinalImage() {
-    if (capturedPhotos.length !== 4) return;
+    if (capturedPhotos.length !== currentLayoutCount) return;
 
     const canvas = document.getElementById('exportCanvas');
     const ctx = canvas.getContext('2d');
@@ -451,9 +542,10 @@ async function generateFinalImage() {
     let currentY = paddingTop * scale;
     const paddingX = parseFloat(computedStyle.paddingLeft) || 10;
     const paddingXScaled = paddingX * scale;
-    const slotWidth = canvas.width - (paddingXScaled * 2);
-    // Since slot ratio is 4/3
-    const slotHeight = slotWidth * (3 / 4);
+
+    let computedWidth = canvas.width - (paddingXScaled * 2);
+    let slotWidth = currentLayoutCount === 6 ? (computedWidth - (gap * scale)) / 2 : computedWidth;
+    let slotHeight = slotWidth * (3 / 4); // 4:3 aspect ratio
 
     // Filter simulation maps
     const filterMaps = {
@@ -471,11 +563,23 @@ async function generateFinalImage() {
         'blur': 'blur(3px) contrast(110%) brightness(105%)'
     };
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < currentLayoutCount; i++) {
+        let x = paddingXScaled;
+        let y = currentY;
+
+        if (currentLayoutCount === 6) {
+            const col = i % 2;
+            const row = Math.floor(i / 2);
+            x = paddingXScaled + col * (slotWidth + gap * scale);
+            y = paddingTop * scale + row * (slotHeight + gap * scale);
+        } else {
+            y = currentY + i * (slotHeight + gap * scale);
+        }
+
         // Draw white slot background
         ctx.fillStyle = '#f0f0f0';
         ctx.beginPath();
-        ctx.roundRect(paddingXScaled, currentY, slotWidth, slotHeight, 8 * scale);
+        ctx.roundRect(x, y, slotWidth, slotHeight, 8 * scale);
         ctx.fill();
 
         // Draw image
@@ -485,17 +589,36 @@ async function generateFinalImage() {
 
         ctx.save();
         ctx.filter = filterMaps[currentFilter] || '';
-        // Note: we already un-mirrored it in captureFrame, so here it draws correctly
 
-        // Clip to rounded slot
         ctx.beginPath();
-        ctx.roundRect(paddingXScaled, currentY, slotWidth, slotHeight, 8 * scale);
+        ctx.roundRect(x, y, slotWidth, slotHeight, 8 * scale);
         ctx.clip();
 
-        ctx.drawImage(img, paddingXScaled, currentY, slotWidth, slotHeight);
+        ctx.drawImage(img, x, y, slotWidth, slotHeight);
         ctx.restore();
 
-        currentY += slotHeight + (gap * scale);
+        // Draw Pose Text if enabled
+        if (showPoseInstruction && currentSessionPoses[i]) {
+            ctx.fillStyle = "rgba(0,0,0,0.4)";
+            const textBgHeight = 26 * scale;
+            ctx.fillRect(x, y + slotHeight - textBgHeight, slotWidth, textBgHeight);
+
+            ctx.font = `600 ${12 * scale}px 'Outfit'`;
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = 4 * scale;
+            ctx.shadowOffsetY = 1 * scale;
+            ctx.fillText(currentSessionPoses[i], x + slotWidth / 2, y + slotHeight - textBgHeight / 2);
+            ctx.shadowColor = "transparent";
+        }
+    }
+
+    if (currentLayoutCount === 6) {
+        currentY = paddingTop * scale + 3 * (slotHeight + gap * scale);
+    } else {
+        currentY += currentLayoutCount * (slotHeight + gap * scale);
     }
 
     // Draw Text
