@@ -173,6 +173,14 @@ h1 {
     height: auto;
     align-items: start;
     justify-content: center;
+    max-width: 100%;
+}
+
+.camera-section,
+.stickers-section,
+.result-section {
+    min-width: 0;
+    /* Prevents grid items from overflowing their assigned tracks */
 }
 
 @media (max-width: 1024px) {
@@ -236,6 +244,8 @@ section {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
     border: 5px solid var(--primary-color);
     transition: border-color 0.3s;
+    margin: 0 auto;
+    /* Ensure centering explicitly */
 }
 
 #videoElement {
@@ -378,10 +388,10 @@ section {
 }
 
 .filter-options {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    justify-content: center;
+    width: 100%;
 }
 
 .filter-btn {
@@ -393,6 +403,8 @@ section {
     font-family: var(--font-family);
     font-weight: 500;
     transition: all 0.2s;
+    text-align: center;
+    width: 100%;
 }
 
 .filter-btn:hover {
@@ -422,17 +434,18 @@ section {
 
 .sticker-palette {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-flow: column;
+    overflow-x: auto;
     gap: 1rem;
     width: 100%;
+    padding-bottom: 1rem;
+    scroll-behavior: smooth;
 }
 
 @media (max-width: 1024px) {
     .sticker-palette {
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        padding-bottom: 1rem;
+        gap: 0.5rem;
     }
 }
 

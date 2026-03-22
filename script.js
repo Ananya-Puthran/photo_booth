@@ -369,12 +369,30 @@ function setupDraggableStickers() {
                 sticker.style.opacity = '1';
                 ghost.remove();
 
+                const moveDistance = Math.hypot(upEvent.clientX - e.clientX, upEvent.clientY - e.clientY);
+
+                // If it was a click (didn't move much)
+                if (moveDistance < 5) {
+                    const rect = photoStrip.getBoundingClientRect();
+                    const dropX = rect.left + rect.width / 2;
+                    // Add some offset so they don't all stack perfectly
+                    const offset = (Math.random() - 0.5) * 40;
+                    const dropY = rect.top + rect.height / 2 + offset;
+
+                    addStickerToStrip(sticker.src, dropX, dropY);
+
+                    // Scroll automatically to show the sticker added properly
+                    photoStripContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+
                 // Find element under the pointer
                 const dropTarget = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
 
                 // If it's inside the photo strip container, add it!
                 if (dropTarget && (dropTarget === photoStrip || photoStrip.contains(dropTarget))) {
                     addStickerToStrip(sticker.src, upEvent.clientX, upEvent.clientY);
+                    photoStripContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             };
 
